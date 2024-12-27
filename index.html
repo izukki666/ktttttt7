@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТехноМагазин - Компьютерная техника</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            background-color: #121212;
+            color: #f4f4f4;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            width: 100%;
+            transition: background 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header.sticky {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+        }
+
+        .nav-links a.active {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #ffcc00;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+            top: 100%;
+            left: 0;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #444;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .search {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search input {
+            padding: 10px 40px 10px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #333;
+            color: #fff;
+            width: 200px;
+            font-size: 16px;
+            transition: width 0.3s ease;
+        }
+
+        .search input:focus {
+            width: 250px;
+        }
+
+        .search button {
+            position: absolute;
+            right: 10px;
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .search button:hover {
+            color: #ffcc00;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .menu-icon {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: #333;
+                position: absolute;
+                top: 60px;
+                left: 0;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links li {
+                text-align: center;
+                margin: 10px 0;
+            }
+            .search {
+                margin-left: auto;
+            }
+        }
+
+        .hero {
+            background: url('https://getwallpapers.com/wallpaper/full/6/a/8/804820-popular-opeth-wallpapers-1920x1080-for-iphone-5s.jpg') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .hero h1 {
+            font-size: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        .hero .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            background: #ffcc00;
+            color: #333;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 2s ease-out forwards;
+        }
+
+        .btn:hover {
+            background-color: #e6b800;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #ffcc00;
+            color: #ffcc00;
+        }
+
+        .btn-secondary:hover {
+            background: #ffcc00;
+            color: #333;
+        }
+
+        .features {
+            background: #1a1a1a;
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .features h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #ffcc00;
+        }
+
+        .features ul {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .features li {
+            width: 250px;
+            margin: 20px;
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(100px);
+            animation: fadeInUp 1s ease-out forwards;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+
+        .features li:hover {
+            transform: translateY(-10px);
+        }
+
+        .features li img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .features li h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+
+        .features li p {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .price {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-top: 10px;
+        }
+
+        .products {
+            background: #121212;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .products h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            position: relative;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        .products h2::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background-color: #ffcc00;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            justify-items: center;
+            padding: 0 20px;
+        }
+
+        .product-card {
+            background: #333;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 300px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+
+        .product-card p {
+            font-size: 16px;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+
+        .product-card a {
+            background: #ffcc00;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: auto;
+        }
+
+        .product-card a:hover {
+            background-color: #e6b800;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .product-card a:active {
+            transform: scale(0.95);
+        }
+
+        .reviews {
+            background: #222;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .reviews h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .reviews blockquote {
+            font-style: italic;
+            font-size: 18px;
+            color: #f4f4f4;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-left: 5px solid #ffcc00;
+            background: #333;
+            border-radius: 5px;
+            transform: translateY(100px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .reviews footer {
+            text-align: right;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .contact {
+            background: #121212;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        .contact form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .contact input,
+        .contact textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background: #333;
+            color: #f4f4f4;
+        }
+
+        .contact textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        .contact input:focus,
+        .contact textarea:focus {
+            border-color: #ffcc00;
+        }
+
+        .contact button {
+            background: #ffcc00;
+            color: #333;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact button:hover {
+            background: #e6b800;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .contact button:active {
+            transform: scale(0.95);
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer .social-links {
+            margin-bottom: 20px;
+        }
+
+        footer .social-links a {
+            color: #fff;
+            font-size: 24px;
+            margin: 0 10px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        footer .social-links a:hover {
+            color: #ffcc00;
+            transform: scale(1.1);
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ffcc00;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 20px;
+            display: none;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .back-to-top:hover {
+            background: #e6b800;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .back-to-top:active {
+            transform: scale(0.95);
+        }
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%; 
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #333;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 0 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .slide img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .slide h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+
+        .slide p {
+            font-size: 16px;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+
+        .slide .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 24px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 10px; 
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10; 
+        }
+
+        .dots .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dots .dot.active {
+            background-color: #ffcc00;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="3681_muabeptuodauhanoi1111.jpg" alt="ТехноМагазин">
+        </div>
+        <nav>
+            <div class="menu-icon" id="menuIcon">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#hero"><i class="fas fa-home"></i> Главная</a></li>
+                <li class="dropdown">
+                    <a href="#products"><i class="fas fa-laptop"></i> Продукция <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#laptops">Ноутбуки</a>
+                        <a href="#monitors">Мониторы</a>
+                        <a href="#accessories">Аксессуары</a>
+                    </div>
+                </li>
+                <li><a href="#features"><i class="fas fa-star"></i> Новинки</a></li>
+                <li><a href="#reviews"><i class="fas fa-comments"></i> Отзывы</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> Контакты</a></li>
+            </ul>
+        </nav>
+        <div class="search">
+            <input type="text" placeholder="Поиск...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+    </header>
+
+    <section class="hero" id="hero">
+        <h1>Добро пожаловать в наш магазин!</h1>
+        <p>Мы предлагаем лучшие технологии для игр, работы и творчества.</p>
+        <div class="cta-buttons">
+            <a href="#products" class="btn">Наши товары</a>
+          
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2>Новинки</h2>
+        <ul>
+            <li>
+                <img src="https://d3fa68hw0m2vcc.cloudfront.net/c12/241335507.jpeg" alt="New Product 1">
+                <h3>Ноутбук ASUS</h3>
+                <p>Сверхбыстрая производительность и стильный дизайн.</p>
+                <span class="price">₽89,990</span>
+            </li>
+            <li>
+                <img src="https://yandex-images.clstorage.net/g9I9H3e32/e22311wv/q050bgUWtaUvhBGbUHlDFZlizvDdXLjMNIw9Fdi8rAGrmPQ3h5DSyTShYyDuFGghdEhizFVxTmcVN7AiHeeYmz5KJGrR0oG0mmHF2tRtg2UJIzpBCdy8vfGsjGRtGTkk-HtTNcCmUG-WJpTCOrQtRGGJ01hEZ8gGIEUgYO9naGkpzDRPl7b0U-2E47zga6BnGDHa0JxNrbzRjJzCjX2_UJq5oUSARRJ-lmdmgDlHPYSzScWLhXeak0LG42LNJWpJ6G2UTuQFVsFORVGe8KkDpLljKAK9_H-807x-UV-eziOZu9MXEEcw3uWnl9OoRI81M4qXqTW0yvLw5zBCbxXoCBoMhm-nRbQhbycDvIEJAmfLsdpyfC9u7IEs_-FtvD0zSRgCdOK3A98UZeVDqAYfVSEqNKoGtLrDMtXAAg01Giu5fYbMRFe1wq1H8Y3xuMKU6pBasG-tzWwCHe_STS2tcylKw5aABcOtpdSEEngnHddAypebRKZIgkFXMvAvZMq5qi3ULnR31THudmDuoZtDRJlBCWJvb28cA2wfgH8MzwNoqFM3UOciT6Wmx3N4Vi_ms-tFmzZlGmAQBTAgnMWK-MvMBi5VhtYzrwQAvOHKQKdZAWlSjq0en-Pdj0Je709DGxqTRXIFQw50NNdCWLaMloLa5LtENOlRIHazUW0F-Pn4DhX_FiSmsL82kS9D-NDFCgHa83wfjpzhX-2hDI6uoNrrAZZy99IMd5dFEFk1L7WxukSJ1JRpwOBnEzPuhVuZeh2VXbRnJcGcNcI_k2pjROiTiCLMbS5_0UycAr2N_HGbuoGWUKXwb-RX9AJ6pw_nIOl1yHX262IRJ8BCzZVIyhtPty3GBuZSz7SxLRLZEqWLUmpg7-2ND4Me3aOfb3zxiJpChrLkot-G5kVCaccdJoNI1fo0J6mSowUi8F_nWImIb1Y9hhSVwR1Gsbwi-CJXGHHIcKxvDa2A_e5jT6wtY" alt="New Product 2">
+                <h3>Мышь Razer</h3>
+                <p>Игровая мышь с настраиваемыми кнопками и подсветкой.</p>
+                <span class="price">₽7,490</span>
+            </li>
+            <li>
+                <img src="https://usedhp.ru/d/dell_p2415q_1.jpg" alt="New Product 3">
+                <h3>Монитор Dell</h3>
+                <p>Потрясающая картинка и отличные углы обзора.</p>
+                <span class="price">₽34,990</span>
+            </li>
+        </ul>
+    </section>
+
+    <section id="products" class="products">
+        <h2>Наши товары</h2>
+        <div class="slider">
+            <div class="slides">
+                <div class="slide">
+                    <img src="https://static.insales-cdn.com/images/products/1/2329/949840153/1aceraspire15a15-51ma15-51m-74hf6.jpg" alt="Product 1">
+                    <h3>Ноутбук Samsung</h3>
+                    <p>Производительный ноутбук для работы и игр.</p>
+                    <span class="price">₽64,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+                <div class="slide">
+                    <img src="https://cdn1.ozone.ru/s3/multimedia-1-j/6917201947.jpg" alt="Product 2">
+                    <h3>Монитор Ardor Gaming</h3>
+                    <p>Чистое изображение с высокой контрастностью.</p>
+                    <span class="price">₽22,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+                <div class="slide">
+                    <img src="https://avatars.mds.yandex.net/i?id=c04dd9e065d060d90d60079f650c9c649a20d3c56386e76d-11543356-images-thumbs&n=13" alt="Product 3">
+                    <h3>Мышь Logitech</h3>
+                    <p>Точная и удобная мышь для комфортной работы.</p>
+                    <span class="price">₽3,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+                <div class="slide">
+                    <img src="https://avatars.mds.yandex.net/i?id=d2af6f119d4a36bea2735970fb1ada3835dfa7c1-12691405-images-thumbs&n=13" alt="Product 4">
+                    <h3>Клавиатура Ardor Gaming</h3>
+                    <p>Механическая клавиатура с отличным откликом.</p>
+                    <span class="price">₽8,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+                <div class="slide">
+                    <img src="https://yandex-images.clstorage.net/iY5EX5098/8cf452Rxsw/DWQznW5PU1bDd4j_DQiD2mzUO3UlnXOnWmW-wADydesI72UR8CC6vkiYqzQRtjCD340lQC7E7DAK2AlMqQlVMB9nItEkC0gLlTyeqwULhthxiXhkOcd3-kAn7c0EpE6Necged9tCwc9ltbRkS7RnzJTLYnwQ1MtrNLZ7VoIBXRw9dxGmalgpceNWz88ePqzIcb8tWALrQ81KSPulcP5BoHfsG17lQ-_GRqOZf06Wb9_D1URIAqDtZz6BXUSPLVk7EFIFmn1YMVzvdtTzHAqL7Va8IXw-3WLzUU7xgWP2R7l62wtSzXzL20mrpldMp2HN-9R4USS6_HUZv0ZsvSxBGxNXDZBxehNP1VPM8RUtiPNYnh91PdZT63RP65FT1l-XcewoTN927MVqj7RtTIpIw_7qXnk8k-JICZZdaaAhYwgUcguGRko5ct51ze4DB4TsQ5ADSiXgXfZ1dMqqdO5mlFr6DU3YSd7xepOMYWiAZOz14EZxBKzZQA6aZ3eqJFkiL2EhunVSN3PXRfzOBhOh1FuJAnoG1FXxRmTFnXLkSItt8DdkxHzu6Uuxokh_kXXB-f56azuVwXIeoHx6ghtAECxSAKRZUDBd8nzr5B88r9dTrAVnGNZS_1546bR6zXSXVf4lUvlG-uR6lptrRqJj3N7DRnADv89HOYBHTIo5eAI6XD6uRUQ_SfV07ecpLYHrYLkCQh7-d-ldeNaIT8dpgVDmG2TbcfHKXqqFZkuZTP_09E9EJYPiVR6KXmi9EUwAEkcqsVN0FFTOaurLHhGk6FGSJ1wy4Hj_fVvtuEb8QoZo7ips3H3S33qLnlRuk0_l2PReViS_9nAImHNphCFEIjRdAqhYfjJMwG7_9CMFoO9ejRp6P8Bz-llX16hR4ke0cNsaUcBR3eRVl7lnaJxs2-P7RmYOgv51DqROVrw6bAMRYAaTSE4UceJH7soZB7fQcbM5XxLkV_BRRuuqWuY" alt="Product 5">
+                    <h3>Наушники Logitech</h3>
+                    <p>Качество звука на высшем уровне, идеальны для игр и музыки.</p>
+                    <span class="price">₽12,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+                <div class="slide">
+                    <img src="https://www.iguides.ru/upload/medialibrary/2f8/2f84b7f8011a6c2ede7dc71856147077.png" alt="Product 6">
+                    <h3>Игровой Компьютер</h3>
+                    <p>Высокопроизводительный ПК для игр и повседневного использования.</p>
+                    <span class="price">₽149,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+                <div class="slide">
+                    <img src="https://i.ytimg.com/vi/ou0-VlsC9qI/maxresdefault.jpg" alt="Product 7">
+                    <h3>Микрофон Fifine AM8</h3>
+                    <p>Идеальный микрофон для игр и для записи видео.</p>
+                    <span class="price">₽5,990</span>
+                    <a href="#" class="btn">Купить</a>
+                </div>
+            </div>
+            <button class="prev" onclick="prevSlide()">&#10094;</button>
+            <button class="next" onclick="nextSlide()">&#10095;</button>
+            <div class="dots">
+                
+            </div>
+        </div>
+    </section>
+
+    <section class="reviews" id="reviews">
+        <h2>Отзывы</h2>
+        <blockquote>
+            <p>Это лучшая техника, которую я когда-либо использовал! Работает без сбоев, качество на высоте.</p>
+            <footer>Алексей, покупатель</footer>
+        </blockquote>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Контактная информация</h2>
+        <form action="#">
+            <input type="text" name="name" placeholder="Ваше имя" required>
+            <input type="email" name="email" placeholder="Ваш email" required>
+            <textarea name="message" placeholder="Ваше сообщение" rows="4" required></textarea>
+            <button type="submit">Отправить</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; 2024 ТехноМагазин. Все права защищены.</p>
+        <p>Телефон: +7 (123) 456-78-90 | Email: info@technomarket.com</p>
+    </footer>
+
+    <a href="#hero" class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelector('.slides');
+        const totalSlides = document.querySelectorAll('.slide').length;
+        const dotsContainer = document.querySelector('.dots');
+
+        // Создаем точки для навигации
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.addEventListener('click', () => showSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+
+        function showSlide(index) {
+            if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else if (index >= totalSlides) {
+                currentSlide = 0;
+            } else {
+                currentSlide = index;
+            }
+            const offset = -currentSlide * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+
+            // Обновляем активную точку
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+    </script>
+</body>
+</html>
